@@ -5,7 +5,12 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"time"
+
+	"github.com/oamazing/msql/utils"
 )
+
+var emptyInterface = reflect.TypeOf((*interface{})(nil)).Elem()
 
 const (
 	minInt32  = -1 << 31
@@ -37,9 +42,11 @@ func (bs *basicScanner) Scan(srcIfc interface{}) error {
 	}
 	switch bs.dbType {
 	case `BIGINT`, `TINYINT`, `INTEGER`, `SMALLINT`:
-		return scanInteger(bs.dest, src)
+		return scanInteger(getRealDest(bs.dest), src)
 	case `VARCHAR`, `LONGTEXT`:
-		return scanString(bs.dest, src)
+		return scanString(getRealDest(bs.dest), src)
+	case `DATETIME`:
+		return scanTime(getRealDest(bs.dest), src)
 	default:
 		return fmt.Errorf("msql: unsupport type %s", bs.dbType)
 	}
@@ -123,6 +130,35 @@ func scanInt(dest reflect.Value, i int64) error {
 func scanString(dest reflect.Value, src []byte) error {
 	dest.SetString(string(src))
 	return nil
+}
+
+func scanTime(dest reflect.Value, src []byte) error {
+	t, err := time.ParseInLocation("2006-01-02 15:04:05", string(src), utils.GetTimeZone())
+	if err != nil {
+		return err
+	}
+	addr := dest.Addr().Interface()
+	if ptr, ok := addr.(*time.Time); ok {
+		*ptr = t
+	} else if dest.Type() == emptyInterface {
+		dest.Set(reflect.ValueOf(src))
+	} else {
+		return errorCannotAssign(src, dest)
+	}
+	return nil
+}
+
+func getRealDest(dest reflect.Value) reflect.Value {
+	if dest.Kind() == reflect.Interface && !dest.IsNil() {
+		dest = dest.Elem()
+	}
+	for dest.Kind() == reflect.Ptr {
+		if dest.IsNil() {
+			dest.Set(reflect.New(dest.Type().Elem()))
+		}
+		dest = dest.Elem()
+	}
+	return dest
 }
 
 func errorValueOutOfRange(src interface{}, dest reflect.Value) error {

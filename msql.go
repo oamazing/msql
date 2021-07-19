@@ -7,7 +7,15 @@ import (
 	"context"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/oamazing/msql/utils"
 )
+
+func init() {
+	// 初始化时区
+	if err := utils.SetTimeZone(`Asia/Shanghai`); err != nil {
+		panic(err)
+	}
+}
 
 const driver = "mysql"
 
@@ -27,4 +35,8 @@ func Open(dataSourceName string) (*Db, error) {
 		return nil, err
 	}
 	return &Db{db: db, TimeOut: time.Duration(time.Second)}, nil
+}
+
+func (db *Db) SetTimeOut(d time.Duration) {
+	db.TimeOut = d
 }

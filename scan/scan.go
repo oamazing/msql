@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"reflect"
+	"time"
 )
 
 func Scan(data interface{}, rows *sql.Rows) error {
@@ -24,10 +25,17 @@ func Scan(data interface{}, rows *sql.Rows) error {
 }
 
 func ScanRow(rows *sql.Rows, target reflect.Value) error {
+	addr := target.Addr().Interface()
 	columnTypes, err := rows.ColumnTypes()
 	if err != nil {
 		return err
 	}
+
+	switch addr.(type) {
+	case *time.Time:
+		return rows.Scan(scannerOf(target, columnTypes[0]))
+	}
+
 	// addr := target.Addr().Interface()
 	switch target.Kind() {
 	case reflect.Struct:

@@ -5,6 +5,9 @@ msql 封装
 - [x] int
 - [x] int64 
 - [x] bool
+- [x] time
+- [ ] json
+- [ ] float
 > scan struct
 
 > scan map
@@ -12,3 +15,4 @@ msql 封装
 > scan slice
 
 > tools
+

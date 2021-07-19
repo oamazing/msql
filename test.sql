@@ -7,7 +7,8 @@ CREATE TABLE `tests` (
     `flag` TINYINT UNSIGNED NOT NULL DEFAULT 0,
     `sex` TINYINT NOT NULL DEFAULT 0,
     `score` INT UNSIGNED NOT NULL DEFAULT 0,
+    `fields` JSON NOT NULL,
     PRIMARY KEY(`id`)
 );
 
-insert into tests (name,created_at) values ("小明",now()),("小王",now());
+insert into tests (name,created_at,fields) values ("小明",now(),'{"ip":"","login_times":20}'),("小王",now(),'{"ip":"","login_times":11}');
