@@ -54,11 +54,18 @@ func Test_Query(t *testing.T) {
 	// 	}
 	// 	fmt.Println(id)
 	// })
-	t.Run(`test datatime`, func(t *testing.T) {
-		var createdAt time.Time
-		if err := db.Query(&createdAt, `SELECT created_at FROM tests WHERE id = 2`); err != nil {
+	// t.Run(`test datatime`, func(t *testing.T) {
+	// 	var createdAt time.Time
+	// 	if err := db.Query(&createdAt, `SELECT created_at FROM tests WHERE id = 2`); err != nil {
+	// 		t.Fatalf("%s", err)
+	// 	}
+	// 	fmt.Println(createdAt)
+	// })
+	t.Run(`test json`, func(t *testing.T) {
+		var fields map[string]interface{}
+		if err := db.Query(&fields, `SELECT fields FROM tests WHERE id = 1`); err != nil {
 			t.Fatalf("%s", err)
 		}
-		fmt.Println(createdAt)
+		fmt.Println(fields)
 	})
 }

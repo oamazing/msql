@@ -1,6 +1,7 @@
 package scan
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -47,6 +48,8 @@ func (bs *basicScanner) Scan(srcIfc interface{}) error {
 		return scanString(getRealDest(bs.dest), src)
 	case `DATETIME`:
 		return scanTime(getRealDest(bs.dest), src)
+	case `JSON`:
+		return scanJson(getRealDest(bs.dest), src)
 	default:
 		return fmt.Errorf("msql: unsupport type %s", bs.dbType)
 	}
@@ -159,6 +162,15 @@ func getRealDest(dest reflect.Value) reflect.Value {
 		dest = dest.Elem()
 	}
 	return dest
+}
+
+func scanJson(dest reflect.Value, src []byte) error {
+	if dest.Kind() != reflect.Struct || dest.Kind() != reflect.Interface || dest.Kind() != reflect.Map {
+		return errorCannotAssign(src, dest)
+	}
+	addr := dest.Addr().Interface()
+	fmt.Println(string(src))
+	return json.Unmarshal(src, addr)
 }
 
 func errorValueOutOfRange(src interface{}, dest reflect.Value) error {

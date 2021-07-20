@@ -31,8 +31,13 @@ func ScanRow(rows *sql.Rows, target reflect.Value) error {
 		return err
 	}
 
+	// parse time
 	switch addr.(type) {
 	case *time.Time:
+		return rows.Scan(scannerOf(target, columnTypes[0]))
+	}
+
+	if len(columnTypes) == 1 && (target.Kind() == reflect.Struct || target.Kind() == reflect.Map) {
 		return rows.Scan(scannerOf(target, columnTypes[0]))
 	}
 
