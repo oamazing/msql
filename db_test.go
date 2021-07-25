@@ -62,7 +62,10 @@ func Test_Query(t *testing.T) {
 	// 	fmt.Println(createdAt)
 	// })
 	t.Run(`test json`, func(t *testing.T) {
-		var fields map[string]interface{}
+		var fields struct{
+			Ip string `json:"ip"`
+			LoginTimes int64 `json:"login_times"`
+		}
 		if err := db.Query(&fields, `SELECT fields FROM tests WHERE id = 1`); err != nil {
 			t.Fatalf("%s", err)
 		}

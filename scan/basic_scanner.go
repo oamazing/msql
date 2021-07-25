@@ -165,11 +165,10 @@ func getRealDest(dest reflect.Value) reflect.Value {
 }
 
 func scanJson(dest reflect.Value, src []byte) error {
-	if dest.Kind() != reflect.Struct || dest.Kind() != reflect.Interface || dest.Kind() != reflect.Map {
+	if dest.Kind() != reflect.Struct && dest.Kind() != reflect.Interface && dest.Kind() != reflect.Map {
 		return errorCannotAssign(src, dest)
 	}
 	addr := dest.Addr().Interface()
-	fmt.Println(string(src))
 	return json.Unmarshal(src, addr)
 }
 
