@@ -17,21 +17,6 @@ func init() {
 	}
 	db.SetTimeOut(time.Minute)
 }
-
-// func TestQuery(t *testing.T) {
-// 	var count int64
-// 	if err := db.Query(&count, `SELECT count(1) FROM tests`); err != nil {
-// 		t.Fatalf("%s", err)
-// 	}
-// 	fmt.Println(count)
-
-// 	var id int64
-// 	if err := db.Query(&id, `SELECT id FROM tests WHERE name = "小王"`); err != nil {
-// 		t.Fatalf("%s", err)
-// 	}
-// 	fmt.Println(id)
-// }
-
 func Test_Query(t *testing.T) {
 	t.Run(`test bool`, func(t *testing.T) {
 		var disable bool
