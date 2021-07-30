@@ -1,6 +1,11 @@
 # msql
 ## mysql 封装
 
+[![Build Status](https://github.com/oamazing/msql/actions/workflows/go.yml/badge.svg)](https://github.com/oamazing/msql/actions/workflows/go.yml)
+[![Coverage Status](https://coveralls.io/repos/github/oamazing/msql/badge.svg?branch=master)](https://coveralls.io/github/oamazing/msql)
+[![Go Report Card](https://goreportcard.com/badge/github.com/oamazing/msql)](https://goreportcard.com/report/github.com/oamazing/msql)
+[![Documentation](https://pkg.go.dev/badge/github.com/oamazing/msql)](https://pkg.go.dev/github.com/oamazing/msql@v0.0.3)
+
 ---
 ## Example:
 ```go
