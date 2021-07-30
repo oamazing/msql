@@ -20,10 +20,10 @@ func init() {
 const driver = "mysql"
 
 type DbOrTx interface {
-	Query(data interface{}, sql string, args ...interface{})
-	QueryT(ctx context.Context, data interface{}, sql string, args ...interface{})
-	Exec(sql string, args ...interface{})
-	ExecT(ctx context.Context, sql string, args ...interface{})
+	Query(data interface{}, sql string, args ...interface{}) error
+	QueryT(ctx context.Context, data interface{}, sql string, args ...interface{}) error
+	Exec(sql string, args ...interface{}) (sql.Result, error)
+	ExecT(ctx context.Context, sql string, args ...interface{}) (sql.Result, error)
 }
 
 func Open(dataSourceName string) (*Db, error) {

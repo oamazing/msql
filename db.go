@@ -24,11 +24,13 @@ func (db *Db) QueryT(d time.Duration, data interface{}, sql string, args ...inte
 	defer cancel()
 	return db.query(ctx, data, sql, args...)
 }
-func (db *Db) Exec(sql string, args ...interface{}) {
-
+func (db *Db) Exec(sql string, args ...interface{}) (sql.Result, error) {
+	return db.ExecT(db.TimeOut, sql, args...)
 }
-func (db *Db) ExecT(t time.Duration, sql string, args ...interface{}) {
-
+func (db *Db) ExecT(t time.Duration, sql string, args ...interface{}) (sql.Result, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), t)
+	defer cancel()
+	return db.db.ExecContext(ctx, sql, args...)
 }
 
 func (db *Db) query(ctx context.Context, data interface{}, sql string, args ...interface{}) error {
@@ -65,4 +67,16 @@ var debug = os.Getenv(`DebugSql`) != ``
 
 func debugSql(sql string) {
 	fmt.Printf("\x1b[%dm%s\x1b[0m\n", 32, sql)
+}
+
+func (db *Db) RunInTransaction(fn func(*Tx) error) error {
+	otx, err := db.db.Begin()
+	if err != nil {
+		return err
+	}
+	tx := &Tx{tx: otx, TimeOut: db.TimeOut}
+	if err = fn(tx); err != nil {
+		return tx.tx.Rollback()
+	}
+	return tx.tx.Commit()
 }
