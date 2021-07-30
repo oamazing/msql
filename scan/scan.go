@@ -5,6 +5,8 @@ import (
 	"errors"
 	"reflect"
 	"time"
+
+	"github.com/oamazing/msql/utils"
 )
 
 func Scan(data interface{}, rows *sql.Rows) error {
@@ -15,7 +17,7 @@ func Scan(data interface{}, rows *sql.Rows) error {
 	target := typ.Elem()
 	switch target.Kind() {
 	case reflect.Slice:
-
+		
 	default:
 		if rows.Next() {
 			return scanRow(rows, target)
@@ -44,9 +46,9 @@ func scanRow(rows *sql.Rows, target reflect.Value) error {
 	// addr := target.Addr().Interface()
 	switch target.Kind() {
 	case reflect.Struct:
-		return scan2Struct(rows,target,columnTypes)
+		return scan2Struct(rows, target, columnTypes)
 	case reflect.Map:
-		return scan2Map(rows,target,columnTypes)
+		return scan2Map(rows, target, columnTypes)
 	default:
 		return rows.Scan(scannerOf(target, columnTypes[0]))
 	}
@@ -82,7 +84,7 @@ func scan2Struct(rows *sql.Rows, target reflect.Value, columns []*sql.ColumnType
 }
 
 func FieldByName(v reflect.Value, name string) reflect.Value {
-	if f, ok := v.Type().FieldByName(name); ok {
+	if f, ok := v.Type().FieldByName(utils.Case2Camel(name)); ok {
 		return FieldByIndex(v, f.Index)
 	}
 	return reflect.Value{}
