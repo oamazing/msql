@@ -29,15 +29,15 @@ if err := db.Query(&ts, `SELECT id,name,created_at FROM tests WHERE id = 1`); er
 - [x] json
 - [ ] float
 > other
-- [ ] struct
+- [x] struct
 - [ ] 事务
-- [ ] slice
+- [x] slice
 
 ---
 
 Todo:
 
-- [ ] 获取结构体字段
+- [x] 获取结构体字段
 - [ ] 结构体值获取
 
 

@@ -67,4 +67,15 @@ func Test_Query(t *testing.T) {
 		}
 		fmt.Printf("%+v", ts)
 	})
+	t.Run(`test struct`, func(t *testing.T) {
+		var ts []struct {
+			Id        int64     `json:"id"`
+			Name      string    `json:"name"`
+			CreatedAt time.Time `json:"created_at"`
+		}
+		if err := db.Query(&ts, `SELECT id,name,created_at FROM tests`); err != nil {
+			t.Fatalf("%s", err)
+		}
+		fmt.Printf("%+v", ts)
+	})
 }

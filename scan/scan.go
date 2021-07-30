@@ -17,7 +17,14 @@ func Scan(data interface{}, rows *sql.Rows) error {
 	target := typ.Elem()
 	switch target.Kind() {
 	case reflect.Slice:
-		
+		typ := target.Type().Elem()
+		for rows.Next() {
+			elem := reflect.New(typ).Elem()
+			if err := scanRow(rows, elem); err != nil {
+				return err
+			}
+			target.Set(reflect.Append(target, elem))
+		}
 	default:
 		if rows.Next() {
 			return scanRow(rows, target)

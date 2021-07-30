@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -20,4 +20,9 @@ jobs:
     - name: download pkg
       run: go mod download
     - name: Test
-      run: go test -v ./...
+      run: go test -v -coverprofile=profile.cov ./...
+    - name: Send coverage
+      uses: shogo82148/actions-goveralls@v1
+      with:
+        path-to-profile: profile.cov
+      if: ${{ matrix.go == '1.16' }}
